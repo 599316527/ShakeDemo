@@ -11,6 +11,7 @@
 @interface ViewController ()
 
 @property (weak, nonatomic) IBOutlet UILabel *stateLabel;
+@property (strong, nonatomic) UIImpactFeedbackGenerator *feedbackGenerator;
 
 @end
 
@@ -19,6 +20,8 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+
+    self.feedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -37,6 +40,8 @@
         
         NSLog(@"开始摇了");
         
+        [self.feedbackGenerator prepare];
+        
         self.stateLabel.text = @"开始摇了";
     }
 }
@@ -46,9 +51,13 @@
  */
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     
-    NSLog(@"摇动结束");
-    
-    self.stateLabel.text = @"摇动结束";
+    if (motion == UIEventSubtypeMotionShake) {
+        NSLog(@"摇动结束");
+        
+        [self.feedbackGenerator impactOccurred];
+        
+        self.stateLabel.text = @"摇动结束";
+    }
 }
 
 /**
